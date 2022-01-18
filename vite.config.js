@@ -8,14 +8,11 @@ import config from 'config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  server: {
-    port: config.backend.server.vitePort,
-    host: config.backend.server.host,
-    proxy: {
-      '/ws': {
-        target: config.backend.server.proxyPath,
-        ws: true
-      }
+  server: config.backend.server,
+  proxy: {
+    '/ws': {
+      target: config.backend.server.proxyPath,
+      ws: true
     }
   },
   plugins: [
