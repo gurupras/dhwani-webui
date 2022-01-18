@@ -9,11 +9,8 @@ import config from 'config'
 // https://vitejs.dev/config/
 export default defineConfig({
   server: config.backend.server,
-  proxy: {
-    '/ws': {
-      target: config.backend.server.proxyPath,
-      ws: true
-    }
+  define: {
+    BACKEND_WEBSOCKET_URL: 'wss://dhwani-backend.gurupras.me'
   },
   plugins: [
     vue(),

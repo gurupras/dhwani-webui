@@ -25,6 +25,7 @@ import Code from './components/code.vue'
 </template>
 
 <script>
+/* global BACKEND_WEBSOCKET_URL */
 import chunk from 'lodash/chunk'
 import { createPeer } from './js/websocket-peer'
 import { v4 as uuidv4 } from 'uuid'
@@ -59,7 +60,7 @@ export default {
       this.$refs.logs.innerHTML = ''
 
       const id = uuidv4()
-      const websocketURL = `${window.location.protocol === 'http:' ? 'ws:' : 'wss:'}//${window.location.host}/ws?id=${this.id}`
+      const websocketURL = `${BACKEND_WEBSOCKET_URL}/?id=${id}`
       const peer = this.peer = await createPeer(id, this.remotePeerID, {
         initiator: true,
         config: {
