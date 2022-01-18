@@ -9,6 +9,7 @@ import config from 'config'
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
+    port: config.backend.server.vitePort,
     proxy: {
       '/ws': {
         target: config.backend.server.proxyPath,
