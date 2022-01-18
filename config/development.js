@@ -5,8 +5,6 @@ module.exports = {
       proxyPath: 'https://dhwani-backend.gurupras.me',
       port: 3132,
       hmr: {
-        host: 'dhwani-backend.gurupras.me',
-        protocol: 'wss',
         clientPort: 443
       }
     }
