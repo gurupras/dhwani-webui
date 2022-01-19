@@ -10,7 +10,7 @@ import config from 'config'
 export default defineConfig({
   server: config.backend.server,
   define: {
-    BACKEND_WEBSOCKET_URL: '"wss://dhwani-backend.gurupras.me/ws"'
+    BACKEND_WEBSOCKET_URL: `'${config.backend.url}'`
   },
   plugins: [
     vue(),
