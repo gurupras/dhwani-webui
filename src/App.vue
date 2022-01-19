@@ -123,6 +123,9 @@ export default {
       if (e.ctrlKey || e.altKey) {
         return
       }
+      if (!((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90))) {
+        return
+      }
       this.$refs.code.focus()
     })
   }
