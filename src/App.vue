@@ -13,7 +13,7 @@
 </template>
 
 <script>
-/* global NATIVE_BACKEND_HOST */
+/* global NATIVE_BACKEND_HOST, WEBUI */
 import { defineComponent } from 'vue'
 
 import { useStore } from '@/stores/main'
@@ -34,10 +34,12 @@ export default defineComponent({
   },
   beforeMount () {
     window.app = this
-    const ws = new WebSocket(`ws://${NATIVE_BACKEND_HOST}/ws`)
-    ws.addEventListener('open', () => {
-      this.store.ws = ws
-    })
+    if (!WEBUI) {
+      const ws = new WebSocket(`ws://${NATIVE_BACKEND_HOST}/ws`)
+      ws.addEventListener('open', () => {
+        this.store.ws = ws
+      })
+    }
   },
   mounted () {
   }
