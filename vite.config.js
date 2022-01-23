@@ -1,3 +1,4 @@
+import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
@@ -9,14 +10,22 @@ import config from 'config'
 // https://vitejs.dev/config/
 export default defineConfig({
   server: config.backend.server,
-  define: {
-    BACKEND_WEBSOCKET_URL: `'${config.backend.url}'`
-  },
   plugins: [
     vue(),
     Components({
       resolvers: IconsResolver()
     }),
     Icons()
-  ]
+
+  ],
+  define: {
+    CENTRAL_BACKEND_WEBSOCKET_URL: `'${config.backend.centralBackendWebsocketURL}'`,
+    NATIVE_BACKEND_HOST: `'${config.backend.nativeBackendHost}'`,
+    WEBUI: `${!!config.webui}`
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  }
 })

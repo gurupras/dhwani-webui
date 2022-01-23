@@ -2,7 +2,7 @@
 </script>
 <template>
 <span>
-  <input v-for="(_, $index) in values" :key="$index" class="input" v-model="values[$index]" required maxlength="1" @keyup="onKeyUp" :ref="'input-' + $index"/>
+  <input v-for="(_, $index) in values" :key="$index" class="input" v-model="values[$index]" required maxlength="1" @keyup="onKeyUp" :ref="el => setInputRef(el, $index)"/>
 </span>
 </template>
 
@@ -20,7 +20,8 @@ export default {
     return {
       value: '',
       values: {},
-      inputs: new Map()
+      inputToIndex: new Map(),
+      indexToInput: new Map()
     }
   },
   watch: {
@@ -39,18 +40,22 @@ export default {
     }
   },
   methods: {
+    setInputRef (el, idxStr) {
+      const idx = Number(idxStr)
+      this.inputToIndex.set(el, idx)
+      this.indexToInput.set(idx, el)
+    },
     onKeyUp (e) {
       // Ignore Shift, Tab, CMD, Option, Control.
       if (e.ctrlKey || e.altKey || e.key === 'Escape' || e.key === 'Tab' || e.key === 'ContextMenu') {
         return
       }
-      const index = this.inputs.get(e.target)
-
+      const index = this.inputToIndex.get(e.target)
       // On Backspace or Left arrow, go to previous input
       if (e.key === 'Backspace' || e.key === 'ArrowLeft') {
         if (index !== 0) {
           // There is a previous input. Select that
-          this.$refs[`input-${index - 1}`].select()
+          this.indexToInput.get(index - 1).select()
         }
         return
       }
@@ -59,10 +64,10 @@ export default {
         return
       }
       // Select the next input
-      this.$refs[`input-${index + 1}`].select()
+      this.indexToInput.get(index + 1).select()
     },
     focus () {
-      this.$refs['input-0'].select()
+      this.indexToInput.get(0).focus()
     }
   },
   beforeMount () {
@@ -71,10 +76,7 @@ export default {
     }
   },
   mounted () {
-    for (let idx = 0; idx < this.numDigits; idx++) {
-      const input = this.$refs[`input-${idx}`]
-      this.inputs.set(input, idx)
-    }
+    window.code = this
   }
 }
 </script>
