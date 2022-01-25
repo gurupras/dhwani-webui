@@ -1,3 +1,4 @@
+/* global WEBUI */
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({

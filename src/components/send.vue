@@ -1,7 +1,23 @@
 <template>
 <div class="wrapper section">
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label" for="device-select">Select a device</label>
+    </div>
+    <div class="field-body">
+      <div class="field is-narrow">
+        <div class="control">
+          <div class="select">
+            <select id="device-select" v-model="device">
+              <option v-for="(device, $index) in devices" :key="device.identifier" :value="device" :selected="$index === 0">{{device.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <button class="button is-link" @click="startStream">Start Streaming</button>
-  <h4 class="subtitle is-size-4" v-if="id">Your ID is {{friendlyLocalPeerID}}</h4>
+  <h4 class="subtitle is-size-4" v-if="friendlyLocalPeerID">Your ID is {{friendlyLocalPeerID}}</h4>
 </div>
 </template>
 
@@ -24,26 +40,40 @@ export default defineComponent({
   data () {
     return {
       started: false,
-      localPeerID: ''
+      devices: [
+        {
+          name: 'Default',
+          id: 'default'
+        }
+      ],
+      device: undefined
     }
   },
   computed: {
     friendlyLocalPeerID () {
-      if (!this.localPeerID) {
+      if (!this.store.localPeerID) {
         return undefined
       }
-      const chunks = chunk(this.localPeerID, 3)
+      const chunks = chunk(this.store.localPeerID, 3)
       return chunks.map(x => x.join('')).join(' ')
     }
   },
   methods: {
     async startStream () {
-      this.localBackend = new DhwaniLocalBackend(this.mainStore.ws)
-      this.localPeerID = await this.localBackend.startRTPServer()
+      const promises = [
+        this.localBackend.startRTPServer(),
+        this.localBackend.startAudioStream(this.device.id)
+      ]
+      const [result] = await Promise.all(promises)
+      this.store.localPeerID = result
     }
   },
-  mounted () {
-
+  async mounted () {
+    this.localBackend = new DhwaniLocalBackend(this.mainStore.ws)
+    const devices = await this.localBackend.getDevices()
+    const recordableDevices = devices.filter(x => x.canRecord)
+    this.devices.push(...recordableDevices)
+    this.device = this.devices[0]
   }
 })
 </script>
