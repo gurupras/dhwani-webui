@@ -30,6 +30,11 @@ export default defineComponent({
       store
     }
   },
+  data () {
+    return {
+      peer: undefined
+    }
+  },
   computed: {
     friendlyRemotePeerID () {
       const chunks = chunk(this.store.remotePeerID, 3)
@@ -41,6 +46,9 @@ export default defineComponent({
       this.$refs.logs.innerHTML = ''
 
       const id = uuidv4()
+      if (this.peer) {
+        this.peer.destroy()
+      }
       const websocketURL = `${CENTRAL_BACKEND_WEBSOCKET_URL}/?id=${id}`
       const peer = this.peer = await createPeer(id, this.store.remotePeerID, {
         initiator: true,
